@@ -4,22 +4,20 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  
 <mapper namespace="Project">
+    <select id="selectIssuesById" parameterType="kr.uicom.vo.Issue" resultType="kr.uicom.vo.Issue">
+        SELECT id, replace(subject,left(subject,7),"") AS subject, description, left(subject,6) AS auid FROM issues where project_id = #{project_id}  AND fixed_version_id = #{fixed_version_id} AND subject like 'AUI%' ORDER BY auid;
+    </select>
 
-    <resultMap id="result" type="kr.uicom.vo.Project">
-        <result property="id" column="id"/>
-        <result property="name" column="name"/>   
-    </resultMap>
- 
-    <select id="selectAll" resultMap="result">
-        SELECT * FROM projects;
+    <select id="selectAttachments" parameterType="int" resultType="kr.uicom.vo.Attachment">
+        SELECT id, filename FROM attachments WHERE container_id = #{id} AND filename LIKE 'AUI%';
     </select>
-    
- 	<select id="selectById" parameterType="int" resultMap="result">
-        SELECT * FROM projects WHERE id = #{id}
+
+    <select id="selectProjectByName" parameterType="String" resultType="kr.uicom.vo.Project">
+        SELECT id, name FROM projects WHERE identifier = '${value}'
     </select>
-    
- 	<insert id="insert" parameterType="Person" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO projects (name) VALUES (#{name});
-    </insert>
-    
+
+    <select id="selectVersionByIdName" parameterType="kr.uicom.vo.Version" resultType="kr.uicom.vo.Version">
+        SELECT id, project_id, name FROM versions WHERE project_id = #{project_id} AND name = #{name}
+    </select>
+
 </mapper>
